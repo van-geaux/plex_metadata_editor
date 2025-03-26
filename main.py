@@ -15,15 +15,15 @@ load_dotenv()
 def load_settings():
     if os.getenv("PLEX_URL") and os.getenv("PLEX_TOKEN"):
         return {
-            "host": os.getenv("PLEX_URL", ""),
-            "apikey": os.getenv("PLEX_TOKEN", "")
+            "host": os.getenv("PLEX_URL", "").replace('\'','').replace('\"',''),
+            "apikey": os.getenv("PLEX_TOKEN", "").replace('\'','').replace('\"','')
         }
     
     else:
         load_dotenv()
         return {
-            "host": os.getenv("PLEX_URL", ""),
-            "apikey": os.getenv("PLEX_TOKEN", "")
+            "host": os.getenv("PLEX_URL", "").replace('\'','').replace('\"',''),
+            "apikey": os.getenv("PLEX_TOKEN", "").replace('\'','').replace('\"','')
         }
 
 def save_settings(host, apikey):
@@ -32,6 +32,7 @@ def save_settings(host, apikey):
     
 cached_data = {}
 settings = load_settings()
+print(settings)
     
 def fetch_data():
     global cached_data

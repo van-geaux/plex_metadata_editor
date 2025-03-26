@@ -9,12 +9,7 @@ Unofficial Plex Manager is a tool designed to help users edit and manage metadat
 - **User-Friendly Interface**: Simple and intuitive UI, just fill the field you want to edit.
 - **Docker Support**: Run the application effortlessly using Docker.
 
-## Screenshots
-![alt text](screenshots/image.png)
-
 ![alt text](screenshots/image-1.png)
-
-![alt text](screenshots/image-2.png)
 
 ## Installation
 ### Requirements
@@ -38,7 +33,6 @@ Unofficial Plex Manager is a tool designed to help users edit and manage metadat
    ```
 
 ## Docker
-Run the Plex NFO Exporter using the official Docker image:
 ```bash
 docker run --rm \
   -e PLEX_URL='http://plex_ip:port' \
@@ -73,6 +67,7 @@ services:
 | `PLEX_TOKEN` | Plex API authentication token | None    |
 
 ## TODO
+- Authentication?
 - Darkmode, tought it's supposed to be easy but I botched my attempts
 - Edits logs
 - Poster/art upload?
@@ -82,3 +77,9 @@ Pull requests are welcome! Please open an issue for any feature requests or bug 
 
 ## License
 This project is licensed under the General Public License. See `LICENSE` for details.
+
+## More Screenshot
+
+![alt text](screenshots/image.png)
+
+![alt text](screenshots/image-2.png)
