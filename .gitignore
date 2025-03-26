@@ -1,0 +1,26 @@
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore log files
+*.log
+
+# Ignore dotenv files (sensitive info)
+.env
+.settings.json
+
+# Ignore compiled files
+*.so
+*.dll
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+*.ipynb
