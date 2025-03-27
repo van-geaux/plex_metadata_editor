@@ -1,13 +1,15 @@
-# Unofficial Plex Manager
+# Plex Metadata Editor
 
 ## Overview
-Unofficial Plex Manager is a tool designed to help users edit and manage metadata for their Plex library content easily. The application provides a streamlined interface for modifying metadata, ensuring a well-organized and visually appealing media collection. Additionally, it includes a feature to run Plex Butler tasks, allowing users to automate maintenance and optimization tasks for their library.
+Plex Metadata Editor is a tool designed to help users edit and manage metadata for their Plex library content easily. The application provides a streamlined interface for modifying metadata, ensuring a well-organized and visually appealing media collection. Additionally, it includes a feature to run Plex Butler tasks, allowing users to automate maintenance and optimization tasks for their library.
 
 ## Features
 - **Library Content Metadata Editor**: Modify titles, descriptions, ratings, and other metadata fields directly.
 - **Plex Butler Task Runner**: Execute and automate various maintenance tasks for your Plex library.
 - **User-Friendly Interface**: Simple and intuitive UI, just fill the field you want to edit.
 - **Docker Support**: Run the application effortlessly using Docker.
+
+> CURRENTLY THERE IS NO AUTH, DO NOT EXPOSE TO THE INTERNET
 
 ![alt text](screenshots/image-1.png)
 
@@ -67,6 +69,7 @@ services:
 | `PLEX_TOKEN` | Plex API authentication token | None    |
 
 ## TODO
+- More metadata fields
 - Authentication?
 - Darkmode, tought it's supposed to be easy but I botched my attempts
 - Edits logs

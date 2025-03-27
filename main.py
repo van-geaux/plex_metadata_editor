@@ -32,7 +32,6 @@ def save_settings(host, apikey):
     
 cached_data = {}
 settings = load_settings()
-print(settings)
     
 def fetch_data():
     global cached_data
@@ -158,6 +157,7 @@ def main():
                 columns = [
                     {'headerName': 'Key', 'field': 'ratingKey', "sortable": True, 'editable': False},
                     {'headerName': 'Title', 'field': 'title', "sortable": True, 'editable': True, 'filter': 'agTextColumnFilter', 'floatingFilter': True},
+                    {'headerName': 'Original Title', 'field': 'originalTitle', "sortable": True, 'editable': True, 'filter': 'agTextColumnFilter', 'floatingFilter': True},
                     {'headerName': 'Studio', 'field': 'studio', "sortable": True, 'editable': True, 'filter': 'agTextColumnFilter', 'floatingFilter': True},
                     {'headerName': 'MPAA', 'field': 'contentRating', "sortable": True, 'editable': True, 'filter': 'agTextColumnFilter', 'floatingFilter': True},
                     {'headerName': 'Critic Rating', 'field': 'rating', "sortable": True, 'editable': True, 'filter': 'agNumberColumnFilter', 'floatingFilter': True, "valueGetter": "Number(data.rating && !isNaN(Number(data.rating))) ? Number(data.rating) : null"},
@@ -199,7 +199,7 @@ def main():
                             for row in data:
                                 if row["ratingKey"] == row_id:
                                     row.update(updated_row)
-                                    break 
+                                    break
 
                 aggrid = ui.aggrid({
                     'columnDefs': columns,
