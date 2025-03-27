@@ -22,7 +22,7 @@ Plex Metadata Editor is a tool designed to help users edit and manage metadata f
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/van-geaux/unofficial_plex_manager.git
+   git clone https://github.com/van-geaux/plex_metadata_editor.git
    cd plex-metadata-manager
    ```
 2. Install dependencies:
@@ -40,14 +40,14 @@ docker run --rm \
   -e PLEX_URL='http://plex_ip:port' \
   -e PLEX_TOKEN='super-secret-token' \
   -p 8080:8080 \
-  ghcr.io/van-geaux/unofficial_plex_manager:latest
+  ghcr.io/van-geaux/plex_metadata_editor:latest
 ```
 
 ## Docker Compose
 ```yaml
 services:
   plex-nfo-exporter:
-    image: ghcr.io/van-geaux/unofficial_plex_manager:latest
+    image: ghcr.io/van-geaux/plex_metadata_editor:latest
     environment:
       - PLEX_URL='http://plex_ip:port'
       - PLEX_TOKEN='super-secret-token'
