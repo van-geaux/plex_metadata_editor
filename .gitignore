@@ -8,9 +8,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Ignore log files
-*.log
-
 # Ignore dotenv files (sensitive info)
 .env
 .settings.json
@@ -24,3 +21,4 @@ __pycache__/
 Thumbs.db
 
 *.ipynb
+logs

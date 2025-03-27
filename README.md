@@ -40,6 +40,7 @@ docker run --rm \
   -e PLEX_URL='http://plex_ip:port' \
   -e PLEX_TOKEN='super-secret-token' \
   -p 8080:8080 \
+  -v /path/to/local/logs:/app/logs \
   ghcr.io/van-geaux/plex_metadata_editor:latest
 ```
 
@@ -53,6 +54,8 @@ services:
       - PLEX_TOKEN='super-secret-token'
     ports:
       - "8080:8080"
+    volumes:
+      - /path/to/local/logs:/app/logs # optional
 ```
 
 ## Usage
@@ -72,7 +75,6 @@ services:
 - More metadata fields
 - Authentication?
 - Darkmode, tought it's supposed to be easy but I botched my attempts
-- Edits logs
 - Poster/art upload?
 
 ## Contributing

@@ -3,13 +3,55 @@
 from dotenv import load_dotenv
 
 # import json
+import logging
 import os
 import requests
 import xml.etree.ElementTree as ET
 
+from datetime import datetime
 from nicegui import ui, app
+from pathlib import Path
 from router import Router
 
+def set_logger():
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+
+    files = list(Path('logs/').iterdir())
+    files = [f for f in files if f.is_file()]
+    if len(files) > 10:
+        files.sort(key=lambda f: f.stat().st_mtime)
+        oldest_file = files[0]
+        os.remove(oldest_file)
+        print(f"Deleted: {oldest_file}")
+    else:
+        pass
+
+    log_level_str = 'INFO'
+
+    log_level_console = getattr(logging, log_level_str, logging.INFO)
+    log_level_file = getattr(logging, log_level_str, logging.WARNING)
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
+    # Console handler (stdout)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(log_level_console)
+    console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+
+    # File handler
+    file_handler = logging.FileHandler(f"logs/app-{datetime.now().date().isoformat().replace('-', '')}.log", encoding='utf-8')
+    file_handler.setLevel(log_level_file)
+    file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
+
+    return logger
+
+logger = set_logger()
 load_dotenv()
 
 def load_settings():
@@ -101,7 +143,6 @@ def main():
                     with ui.card().style("width: 250px;"):
                         with ui.column():
                             ui.label(f"{library.get('title')}").style("font-size: 18px; font-weight: bold;")
-                            # ui.label(f"🔑 Key: {library.get('key')}")
                             ui.label(f"📂 Type: {library.get('type')}")
                             ui.label(f"🤖 Agent: {library.get('agent')}")
                             ui.label(f"🔍 Scanner: {library.get('scanner')}")
@@ -148,12 +189,10 @@ def main():
         with ui.column().style("margin-left: 220px;"):
             ui.label(f"📚 {lib_title}").style("font-size: 24px; font-weight: bold; margin-bottom: 10px;")
             ui.label("Warning!!!!!!!!!")
-            ui.label("Whatever you edit here is currently not logged.")
             ui.label("This page use PUT API to send whatever you change to your Plex Server, proceed if you understand the risks.")
             ui.label("Double click the field you want to edit, fill it, then hit enter to send the updated data to your server.")
 
             if data:
-                # first_item = data[0]
                 columns = [
                     {'headerName': 'Key', 'field': 'ratingKey', "sortable": True, 'editable': False},
                     {'headerName': 'Title', 'field': 'title', "sortable": True, 'editable': True, 'filter': 'agTextColumnFilter', 'floatingFilter': True},
@@ -167,12 +206,6 @@ def main():
                     {'headerName': 'Tagline', 'field': 'tagline', "sortable": True, 'editable': True},
                     {'headerName': 'Summary', 'field': 'summary', "sortable": True, 'editable': True},
                     {'headerName': 'Orginally Available At', 'field': 'originallyAvailableAt', "sortable": True, 'editable': True},
-                    # {"name": key, "label": key.capitalize(), "field": key, "sortable": True, "filterable": True, 'editable': True} 
-                    # for key in first_item.keys() 
-                    # if isinstance(first_item[key], (str, int, float)) and key in (
-                    #     'ratingKey', 'title', 'studio', 'contentRating', 'rating', 'audienceRating',
-                    #     'userRating', 'year', 'summary', 'originallyAvailableAt'
-                    #     )
                     ]
                 
                 def handle_cell_value_change(e):
@@ -192,9 +225,13 @@ def main():
                                 put_response = requests.put(put_url, headers=headers)
 
                             if put_response.status_code == 200:
-                                ui.notify(f"Updated key {row_id}'s {changed_column} to: {updated_value}")
+                                status = f"Updated key {row_id}'s {changed_column}: {original_row[changed_column]} → {updated_value}"
+                                logger.info(status)
+                                ui.notify(status)
                             else:
-                                ui.notify(f"Failed to update key {row_id}'s {changed_column} due to {put_response.text}")
+                                status = f"Failed to update key {row_id}'s {changed_column} due to {put_response.text}"
+                                logger.info(status)
+                                ui.notify(status)
                             
                             for row in data:
                                 if row["ratingKey"] == row_id:
@@ -220,19 +257,23 @@ def main():
             ui.label("The RUN button will attempt to start a single Butler task that is enabled in the settings.")
             ui.label("Butler tasks normally run automatically during a time window configured on the server’s Settings page but can be manually started using this endpoint.")
             ui.label("Tasks will run with the following criteria:")
-            ui.label("    1. Any tasks not scheduled to run on the current day will be skipped.")
-            ui.label("    2. If a task is configured to run at a random time during the configured window and you are outside that window, the task will start immediately.")
-            ui.label("    3. If a task is configured to run at a random time during the configured window and you are within that window, the task will be scheduled at a random time within the window.")
-            ui.label("    4. If you are outside the configured window, the task will start immediately.")
+            ui.label("1. Any tasks not scheduled to run on the current day will be skipped.")
+            ui.label("2. If a task is configured to run at a random time during the configured window and you are outside that window, the task will start immediately.")
+            ui.label("3. If a task is configured to run at a random time during the configured window and you are within that window, the task will be scheduled at a random time within the window.")
+            ui.label("4. If you are outside the configured window, the task will start immediately.")
 
             def run_butler(butler_name):
                 post_url = f"{settings['host']}/butler/{butler_name}"
                 post_response = requests.post(post_url, headers=headers)
 
                 if post_response.status_code == 200:
-                    ui.notify(f"Task {butler_name} successfully sent to")
+                    status = f"Task {butler_name} successfully sent to"
+                    logger.info(status)
+                    ui.notify(status)
                 else:
-                    ui.notify(f"Failed to send butler task {butler_name} due to {post_response.text}")
+                    status = f"Failed to send butler task {butler_name} due to {post_response.text}"
+                    logger.info(status)
+                    ui.notify(status)
 
             with ui.row().style("flex-wrap: wrap; gap: 10px; justify-content: start;"):
                 for butler in cached_data.get('butler', []):
@@ -244,7 +285,6 @@ def main():
                             ui.label(f"🕔 Random Schedule: {butler.get('scheduleRandomized')}")
                             ui.button("RUN", on_click=lambda: run_butler(butler.get('name'))).style("margin-top: auto; width: 120px; text-align: center;")
 
-                            
     @router.add('/options')
     def options_page():
         with ui.row():
